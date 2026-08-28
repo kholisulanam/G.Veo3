@@ -1,0 +1,703 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veo 3 Prompt Generator - Advanced</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f8fafc; /* Slate 50 */
+        }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Form section styling */
+        .form-section {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .form-section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #93c5fd;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding-bottom: 0.5rem;
+        }
+        
+        .input-field {
+            width: 100%;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            color: white;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        .input-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #94a3b8;
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-6 selection:bg-purple-500 selection:text-white">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+        <header class="text-center space-y-2 mb-8">
+            <h1 class="text-3xl md:text-5xl font-bold tracking-tight">
+                <span class="gradient-text">Veo 3</span> Advanced Prompt
+            </h1>
+            <h2 class="text-3xl md:text-2xl font-bold tracking-tight">
+                Oleh : <span class="gradient-text">Anam™ </span>
+            </h2>
+            <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+                Meracik prompt video profesional dengan parameter sinematografi, karakter, dan audio lengkap.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <div class="lg:col-span-6 xl:col-span-5 glass-panel rounded-2xl p-4 md:p-6 shadow-2xl h-[80vh] overflow-y-auto relative">
+                <form id="promptForm" class="space-y-2">
+                    
+                    <!-- SECTION: SUBJEK -->
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-users"></i> Detail Subjek</h3>
+                        <div id="characterContainer" class="space-y-4">
+                            <!-- Character blocks will be injected here by JS -->
+                        </div>
+                        <button type="button" onclick="addCharacter()" class="mt-4 w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-sm text-blue-400 font-medium transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-plus"></i> Tambah Karakter
+                        </button>
+                    </div>
+
+                    <!-- SECTION: LATAR -->
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-map-marker-alt"></i> Latar Lingkungan</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="input-label">Lokasi</label>
+                                <input type="text" id="settingLocation" class="input-field" placeholder="Contoh: Kafe di pinggir jalan kota Paris">
+                            </div>
+                            <div>
+                                <label class="input-label">Waktu</label>
+                                <select id="settingTime" class="input-field appearance-none">
+                                    <option value="">Bebas</option>
+                                    <option value="Pagi hari (Morning)">Pagi hari</option>
+                                    <option value="Siang hari (Noon)">Siang hari</option>
+                                    <option value="Sore hari (Afternoon)">Sore hari</option>
+                                    <option value="Malam hari (Night)">Malam hari</option>
+                                    <option value="Golden Hour">Golden Hour</option>
+                                    <option value="Blue Hour">Blue Hour</option>
+                                    <option value="Tengah malam (Midnight)">Tengah malam</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="input-label">Cuaca</label>
+                                <select id="settingWeather" class="input-field appearance-none">
+                                    <option value="">Bebas</option>
+                                    <option value="Cerah (Clear)">Cerah</option>
+                                    <option value="Berawan (Cloudy)">Berawan</option>
+                                    <option value="Hujan (Raining)">Hujan</option>
+                                    <option value="Badai (Stormy)">Badai</option>
+                                    <option value="Salju (Snowing)">Salju</option>
+                                    <option value="Berkabut (Foggy)">Berkabut</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="input-label">Musim</label>
+                                <select id="settingSeason" class="input-field appearance-none">
+                                    <option value="">Bebas</option>
+                                    <option value="Musim Panas (Summer)">Musim Panas (Summer)</option>
+                                    <option value="Musim Dingin (Winter)">Musim Dingin (Winter)</option>
+                                    <option value="Musim Semi (Spring)">Musim Semi (Spring)</option>
+                                    <option value="Musim Gugur (Autumn)">Musim Gugur (Autumn)</option>
+                                    <option value="Tropis (Tropical)">Iklim Tropis (Tropical)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: KAMERA -->
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-video"></i> Kamera & Visual</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="input-label">Gaya Visual</label>
+                                <select id="camStyle" class="input-field appearance-none">
+                                    <option value="Sinematik fotorealistik (Cinematic photorealistic)">Sinematik</option>
+                                    <option value="Dokumenter (Documentary style)">Dokumenter</option>
+                                    <option value="Vlog / Kamera HP (Vlog / Smartphone footage)">Vlog / Handphone</option>
+                                    <option value="Kamera Keamanan (CCTV footage)">CCTV</option>
+                                    <option value="Animasi 3D (3D Animation Pixar style)">Animasi 3D</option>
+                                    <option value="Anime Jepang (Japanese Anime style)">Anime</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="input-label">Pergerakan Kamera</label>
+                                <select id="camMovement" class="input-field appearance-none">
+                                    <option value="Statis (Static shot)">Statis / Static</option>
+                                    <option value="Maju perlahan (Slow push in)">Maju Perlahan / Push In</option>
+                                    <option value="Mundur perlahan (Slow pull out)">Mundur Perlahan / Pull Out</option>
+                                    <option value="Geser mengikuti subjek (Tracking shot)">Tracking (Mengikuti Subjek)</option>
+                                    <option value="Geser perlahan (Pan left/right)">Pan (Kiri/Kanan)</option>
+                                    <option value="Berputar mengelilingi (Orbit shot)">Orbit (Mengelilingi)</option>
+                                    <option value="Dari udara (Drone/Aerial shot)">Drone / Aerial</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="input-label">Sudut Kamera</label>
+                                <select id="camAngle" class="input-field appearance-none">
+                                    <option value="Sejajar mata (Eye level)">Eye Level</option>
+                                    <option value="Sudut bawah (Low angle)">Low Angle</option>
+                                    <option value="Sudut atas (High angle)">High Angle</option>
+                                    <option value="Dari atas (Top down / Bird's eye)">Top Down / Bird's eye</option>
+                                    <option value="Sudut miring (Dutch angle)">Dutch Angle (Miring)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="input-label">Fokus</label>
+                                <select id="camFocus" class="input-field appearance-none">
+                                    <option value="Fokus standar (Standard focus)">Standar</option>
+                                    <option value="Kedalaman ruang dangkal, latar blur (Shallow depth of field, blurred background)">Latar Blur (Shallow DOF)</option>
+                                    <option value="Fokus tajam keseluruhan (Deep focus)">Fokus Semua (Deep Focus)</option>
+                                    <option value="Fokus sangat dekat (Macro shot)">Makro</option>
+                                    <option value="Perpindahan fokus (Rack focus)">Rack Focus</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="input-label">Pencahayaan</label>
+                                <select id="camLighting" class="input-field appearance-none">
+                                    <option value="Pencahayaan alami (Natural lighting)">Alami (Natural)</option>
+                                    <option value="Pencahayaan studio (Studio lighting)">Studio</option>
+                                    <option value="Pencahayaan dramatis, bayangan gelap (Dramatic, low key lighting)">Dramatis (Low Key)</option>
+                                    <option value="Pencahayaan terang merata (High key lighting)">Terang (High Key)</option>
+                                    <option value="Pencahayaan neon warna-warni (Neon / Cyberpunk lighting)">Neon / Cyberpunk</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="input-label">Gradasi Warna</label>
+                                <select id="camColor" class="input-field appearance-none">
+                                    <option value="Warna natural dan realistis (Natural colors)">Natural</option>
+                                    <option value="Teal dan Orange sinematik (Cinematic Teal and Orange)">Teal & Orange</option>
+                                    <option value="Hitam putih (Black and White)">Hitam Putih</option>
+                                    <option value="Warna pudar vintage (Vintage/Faded colors)">Vintage / Faded</option>
+                                    <option value="Warna suram/desaturasi (Desaturated/Muted colors)">Desaturated / Suram</option>
+                                    <option value="Kontras tinggi (High contrast)">Kontras Tinggi</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: AUDIO -->
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-volume-up"></i> Audio & Dialog</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="input-label">Tipe Dialog</label>
+                                <select id="audioType" class="input-field appearance-none" onchange="toggleDialogueSection()">
+                                    <option value="Tanpa dialog">Tanpa dialog</option>
+                                    <option value="Natural dialog">Natural dialog (Percakapan alami)</option>
+                                    <option value="Informatif">Informatif / Voice Over</option>
+                                    <option value="Monolog">Monolog</option>
+                                    <option value="Interview">Interview</option>
+                                </select>
+                            </div>
+
+                            <div id="dialogueSection" class="hidden space-y-3 p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                                <label class="input-label text-blue-300">Skrip Dialog</label>
+                                <div id="dialogueContainer" class="space-y-3">
+                                    <!-- Dialogue lines injected here -->
+                                </div>
+                                <button type="button" onclick="addDialogueLine()" class="w-full py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-white transition-colors">
+                                    + Tambah Baris Dialog
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="input-label">Suara Lingkungan (Ambient)</label>
+                                    <input type="text" id="audioAmbient" class="input-field" placeholder="Contoh: Suara rintik hujan, hiruk pikuk kota">
+                                </div>
+                                <div>
+                                    <label class="input-label">Background Music</label>
+                                    <input type="text" id="audioBGM" class="input-field" placeholder="Contoh: Musik orkestra yang menegangkan">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION: TAMBAHAN -->
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-sliders-h"></i> Detail Tambahan</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="input-label">Kualitas Video</label>
+                                <select id="videoQuality" class="input-field appearance-none">
+                                    <option value="8K resolution, masterpiece, ultra-detailed, highly realistic">Kualitas Maksimal (8K, Masterpiece)</option>
+                                    <option value="4K resolution, high quality, sharp focus">Standar Profesional (4K)</option>
+                                    <option value="Raw footage, unedited look">Raw Footage (Natural)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="input-label">Instruksi Tambahan (Opsional)</label>
+                                <textarea id="extraDetails" rows="2" class="input-field resize-none" placeholder="Tambahkan detail spesifik lainnya..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 sticky bottom-0 bg-slate-900/90 pb-2 backdrop-blur-sm border-t border-slate-800 mt-4">
+                        <button type="submit" id="generateBtn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold py-3.5 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-2">
+                            <i class="fas fa-magic"></i> Racik Prompt Veo 3
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div class="lg:col-span-6 xl:col-span-7 space-y-6 h-[80vh] flex flex-col">
+                
+                <!-- Loading State -->
+                <div id="loadingState" class="hidden glass-panel rounded-2xl p-12 flex flex-col items-center justify-center text-center space-y-4 flex-1 border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                    <i class="fas fa-circle-notch text-5xl text-blue-400 spinner"></i>
+                    <h3 class="text-2xl font-medium text-white">Menyusun Mahakarya...</h3>
+                    <p class="text-slate-400">Merangkai parameter visual, kamera, dan audio menjadi prompt yang sempurna.</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="glass-panel rounded-2xl p-12 flex flex-col items-center justify-center text-center space-y-4 flex-1">
+                    <div class="w-20 h-20 bg-slate-800/80 rounded-full flex items-center justify-center mb-2 shadow-inner">
+                        <i class="fas fa-robot block text-3xl text-slate-500"></i>
+                    </div>
+                    <h3 class="text-xl font-medium text-slate-300">Siap Meracik Prompt</h3>
+                    <p class="text-slate-500 text-sm max-w-md">Lengkapi form di sebelah kiri untuk menghasilkan prompt Veo 3 yang kaya akan detail visual dan temporal.</p>
+                </div>
+
+                <!-- Results Container -->
+                <div id="resultsContainer" class="hidden flex-col gap-6 flex-1 overflow-y-auto pb-4 pr-2">
+                    
+                    <!-- English Prompt -->
+                    <div class="glass-panel rounded-2xl overflow-hidden border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)] transition-all flex flex-col">
+                        <div class="bg-slate-800/90 px-4 py-3 flex justify-between items-center border-b border-slate-700/50">
+                            <h3 class="font-semibold flex items-center gap-2 text-purple-300">
+                                <span class="text-xl">🇺🇸</span> English Prompt (Recommended for Veo 3)
+                            </h3>
+                            <button onclick="copyToClipboard('enPromptText', this)" class="text-slate-400 hover:text-white transition-colors p-2 rounded-md hover:bg-slate-700" title="Copy to clipboard">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="p-4 relative flex-1 min-h-[250px]">
+                            <textarea id="enPromptText" readonly class="w-full h-full bg-transparent text-slate-200 resize-none focus:outline-none leading-relaxed text-sm md:text-base absolute inset-4 right-6 bottom-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)]"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Optimized Cinematic Prompt -->
+                    <div class="glass-panel rounded-2xl overflow-hidden border border-yellow-500/30 shadow-[0_0_15px_rgba(234,179,8,0.15)] transition-all flex flex-col">
+                        <div class="bg-slate-800/90 px-4 py-3 flex justify-between items-center border-b border-slate-700/50">
+                            <h3 class="font-semibold flex items-center gap-2 text-yellow-300">
+                                <span class="text-xl">🎬</span> Optimized Cinematic Prompt (Hollywood Standard)
+                            </h3>
+                            <button onclick="copyToClipboard('optPromptText', this)" class="text-slate-400 hover:text-white transition-colors p-2 rounded-md hover:bg-slate-700" title="Copy to clipboard">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="p-4 relative flex-1 min-h-[250px]">
+                            <textarea id="optPromptText" readonly class="w-full h-full bg-transparent text-slate-200 resize-none focus:outline-none leading-relaxed text-sm md:text-base absolute inset-4 right-6 bottom-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)]"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Indonesian Prompt -->
+                    <div class="glass-panel rounded-2xl overflow-hidden border border-blue-500/30 transition-all flex flex-col">
+                        <div class="bg-slate-800/90 px-4 py-3 flex justify-between items-center border-b border-slate-700/50">
+                            <h3 class="font-semibold flex items-center gap-2 text-blue-300">
+                                <span class="text-xl">🇮🇩</span> Prompt Bahasa Indonesia
+                            </h3>
+                            <button onclick="copyToClipboard('idPromptText', this)" class="text-slate-400 hover:text-white transition-colors p-2 rounded-md hover:bg-slate-700" title="Copy to clipboard">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="p-4 relative flex-1 min-h-[250px]">
+                            <textarea id="idPromptText" readonly class="w-full h-full bg-transparent text-slate-200 resize-none focus:outline-none leading-relaxed text-sm md:text-base absolute inset-4 right-6 bottom-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)]"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Use empty API key as instructed for the Canvas environment
+        const apiKey = ""; 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+        let characterCount = 0;
+        let dialogueCount = 0;
+
+        // Initialize first character on load
+        window.onload = () => {
+            addCharacter();
+        };
+
+        function addCharacter() {
+            characterCount++;
+            const container = document.getElementById('characterContainer');
+            
+            const charDiv = document.createElement('div');
+            charDiv.className = 'p-3 bg-slate-800/80 border border-slate-700 rounded-lg space-y-3 relative char-block';
+            charDiv.id = `char_${characterCount}`;
+            
+            charDiv.innerHTML = `
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Karakter ${characterCount}</span>
+                    ${characterCount > 1 ? `<button type="button" onclick="removeCharacter('${charDiv.id}')" class="text-red-400 hover:text-red-300 text-xs"><i class="fas fa-times"></i> Hapus</button>` : ''}
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="input-label">Nama / Sebutan</label>
+                        <input type="text" class="input-field char-name" placeholder="Contoh: Pria tua, Anna, Robot" required onchange="updateDialogueDropdowns()">
+                    </div>
+                    <div>
+                        <label class="input-label">Kewarganegaraan / Etnis</label>
+                        <input type="text" class="input-field char-nation" placeholder="Contoh: Indonesia, Kaukasia">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="input-label">Karakteristik Fisik & Pakaian</label>
+                        <input type="text" class="input-field char-desc" placeholder="Contoh: Rambut putih panjang, memakai jas hitam elegan" required>
+                    </div>
+                    <div>
+                        <label class="input-label">Aksi Utama</label>
+                        <input type="text" class="input-field char-action" placeholder="Contoh: Menyeruput kopi sambil melihat jendela">
+                    </div>
+                    <div>
+                        <label class="input-label">Emosi / Ekspresi</label>
+                        <input type="text" class="input-field char-emotion" placeholder="Contoh: Sedih, tersenyum tipis, marah">
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(charDiv);
+            updateDialogueDropdowns();
+        }
+
+        function removeCharacter(id) {
+            document.getElementById(id).remove();
+            updateDialogueDropdowns();
+        }
+
+        function toggleDialogueSection() {
+            const type = document.getElementById('audioType').value;
+            const section = document.getElementById('dialogueSection');
+            if (type === 'Tanpa dialog') {
+                section.classList.add('hidden');
+            } else {
+                section.classList.remove('hidden');
+                if(document.getElementById('dialogueContainer').children.length === 0) {
+                    addDialogueLine(); // Add one line by default if empty
+                }
+            }
+        }
+
+        function getCharacterOptions() {
+            const names = Array.from(document.querySelectorAll('.char-name')).map(input => input.value.trim() || 'Karakter Belum Dinamai');
+            let optionsHTML = '';
+            names.forEach((name, index) => {
+                optionsHTML += `<option value="${name}">${name}</option>`;
+            });
+            return optionsHTML || `<option value="Narator">Narator</option>`;
+        }
+
+        function updateDialogueDropdowns() {
+            const dropdowns = document.querySelectorAll('.dialogue-char-select');
+            const options = getCharacterOptions();
+            dropdowns.forEach(dd => {
+                const currentVal = dd.value;
+                dd.innerHTML = options;
+                // try to restore value if still exists
+                if(Array.from(dd.options).some(opt => opt.value === currentVal)) {
+                    dd.value = currentVal;
+                }
+            });
+        }
+
+        function addDialogueLine() {
+            dialogueCount++;
+            const container = document.getElementById('dialogueContainer');
+            
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'grid grid-cols-[1fr_1fr_auto] gap-2 items-end bg-slate-900/50 p-2 rounded border border-slate-700 dialogue-row';
+            lineDiv.id = `diag_${dialogueCount}`;
+            
+            lineDiv.innerHTML = `
+                <div>
+                    <label class="input-label">Karakter</label>
+                    <select class="input-field py-1.5 px-2 dialogue-char-select appearance-none text-xs">
+                        ${getCharacterOptions()}
+                    </select>
+                </div>
+                <div>
+                    <label class="input-label">Mood Suara</label>
+                    <select class="input-field py-1.5 px-2 dialogue-mood appearance-none text-xs">
+                        <option value="Normal">Normal</option>
+                        <option value="Happy (Senang)">Senang</option>
+                        <option value="Sad (Sedih)">Sedih</option>
+                        <option value="Cheerful (Ceria)">Ceria</option>
+                        <option value="Angry (Marah)">Marah</option>
+                        <option value="Serious (Serius)">Serius</option>
+                        <option value="Whispering (Berbisik)">Berbisik</option>
+                        <option value="Shouting (Berteriak)">Berteriak</option>
+                    </select>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-slate-500 hover:text-red-400 p-2"><i class="fas fa-trash"></i></button>
+                <div class="col-span-3">
+                    <input type="text" class="input-field py-1.5 text-sm dialogue-text" placeholder="Teks yang diucapkan...">
+                </div>
+            `;
+            container.appendChild(lineDiv);
+        }
+
+        const form = document.getElementById('promptForm');
+        const generateBtn = document.getElementById('generateBtn');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // 1. GATHER DATA
+            // Characters
+            const charBlocks = document.querySelectorAll('.char-block');
+            let characters = [];
+            charBlocks.forEach(block => {
+                characters.push({
+                    name: block.querySelector('.char-name').value.trim(),
+                    nation: block.querySelector('.char-nation').value.trim(),
+                    desc: block.querySelector('.char-desc').value.trim(),
+                    action: block.querySelector('.char-action').value.trim(),
+                    emotion: block.querySelector('.char-emotion').value.trim(),
+                });
+            });
+
+            // Dialogues
+            const diagType = document.getElementById('audioType').value;
+            let dialogues = [];
+            if(diagType !== 'Tanpa dialog') {
+                const diagRows = document.querySelectorAll('.dialogue-row');
+                diagRows.forEach(row => {
+                    const text = row.querySelector('.dialogue-text').value.trim();
+                    if(text) {
+                        dialogues.push({
+                            char: row.querySelector('.dialogue-char-select').value,
+                            mood: row.querySelector('.dialogue-mood').value,
+                            text: text
+                        });
+                    }
+                });
+            }
+
+            const promptData = {
+                characters: characters,
+                setting: {
+                    location: document.getElementById('settingLocation').value.trim(),
+                    time: document.getElementById('settingTime').value,
+                    weather: document.getElementById('settingWeather').value,
+                    season: document.getElementById('settingSeason').value,
+                },
+                camera: {
+                    style: document.getElementById('camStyle').value,
+                    movement: document.getElementById('camMovement').value,
+                    angle: document.getElementById('camAngle').value,
+                    focus: document.getElementById('camFocus').value,
+                    lighting: document.getElementById('camLighting').value,
+                    color: document.getElementById('camColor').value,
+                },
+                audio: {
+                    type: diagType,
+                    ambient: document.getElementById('audioAmbient').value.trim(),
+                    bgm: document.getElementById('audioBGM').value.trim(),
+                    dialogues: dialogues
+                },
+                quality: document.getElementById('videoQuality').value,
+                extra: document.getElementById('extraDetails').value.trim()
+            };
+
+            // 2. UI STATE UPDATE
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('loadingState').classList.remove('hidden');
+            
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<i class="fas fa-circle-notch spinner"></i> Sedang Meracik...';
+            generateBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            try {
+                // 3. CONSTRUCT USER QUERY
+                const userQuery = JSON.stringify(promptData, null, 2);
+
+                const systemPrompt = `You are an expert prompt engineer specializing in the Google Veo 3 video generation model.
+The user provides a JSON payload containing detailed parameters for a video generation request.
+Your task is to craft highly descriptive, professional, flowing paragraph prompts that combine all these elements seamlessly to ensure temporal consistency and high visual quality in Veo 3.
+
+CRITICAL INSTRUCTIONS:
+1. EXPAND AND ENHANCE: Do not just list the parameters. Write a cohesive, descriptive narrative prompt. Integrate the camera movements, lighting, and character descriptions naturally into the scene description.
+2. DIALOGUE RULE (EXTREMELY IMPORTANT): If the "dialogues" array contains text, you MUST include the spoken text in the prompt EXACTLY as provided by the user inside quotation marks. DO NOT TRANSLATE the text inside the quotation marks into English, even for the en_prompt and optimized_prompt. Keep the original wording the user typed for the dialogue.
+   - Example format for prompt: Audio: [Character] says in a [mood] tone, "Teks asli yang diketik user."
+3. OPTIMIZED CINEMATIC VERSION: You must create a third version of the prompt called "optimized_prompt" (in English). This version elevates the standard English prompt to a Hollywood cinematic standard. Add advanced cinematography terminology (e.g., Arri Alexa 65, 35mm focal length, volumetric lighting, precise atmospheric details), hyper-detailed spatial relationships, and cinematic pacing cues. Make it the ultimate masterpiece prompt.
+4. OUTPUT FORMAT: You must return the output STRICTLY as a JSON object with three keys:
+   - "id_prompt": The highly detailed prompt written in Indonesian.
+   - "en_prompt": The highly detailed prompt written in English.
+   - "optimized_prompt": The ultra-detailed Hollywood standard cinematic prompt in English.
+
+Structure the prompt well:
+- Start with the visual style, quality, and camera details.
+- Describe the setting, weather, and time.
+- Describe the subject(s) in detail (appearance, clothing, nationality/ethnicity) to maintain consistency.
+- Describe the subjects' actions and emotions clearly.
+- Describe the camera movement, angles, lighting, and focus.
+- Add audio, ambient, and dialogue cues at the end (Remember rule #2).
+
+Return ONLY valid JSON. No markdown ticks outside the JSON.`;
+
+                // 4. API CALL
+                const payload = {
+                    contents: [{ parts: [{ text: `Generate Veo 3 prompt based on this data:\n${userQuery}` }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                "id_prompt": { "type": "STRING" },
+                                "en_prompt": { "type": "STRING" },
+                                "optimized_prompt": { "type": "STRING" }
+                            },
+                            required: ["id_prompt", "en_prompt", "optimized_prompt"]
+                        }
+                    }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const result = await response.json();
+                
+                if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    const jsonText = result.candidates[0].content.parts[0].text;
+                    const parsedData = JSON.parse(jsonText);
+
+                    // Update TextAreas
+                    document.getElementById('idPromptText').value = parsedData.id_prompt;
+                    document.getElementById('enPromptText').value = parsedData.en_prompt;
+                    document.getElementById('optPromptText').value = parsedData.optimized_prompt;
+
+                    // Show Results
+                    document.getElementById('loadingState').classList.add('hidden');
+                    document.getElementById('resultsContainer').classList.remove('hidden');
+                    document.getElementById('resultsContainer').classList.add('flex');
+
+                } else {
+                    throw new Error("Struktur response API tidak valid.");
+                }
+
+            } catch (error) {
+                console.error("Error generating prompts:", error);
+                alert("Terjadi kesalahan saat membuat prompt. Silakan periksa koneksi dan coba lagi.");
+                
+                // Revert UI on error
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('emptyState').classList.remove('hidden');
+            } finally {
+                // Reset Button
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fas fa-magic"></i> Racik Prompt Veo 3';
+                generateBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        });
+
+        function copyToClipboard(elementId, buttonElement) {
+            const copyText = document.getElementById(elementId);
+            
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+
+            try {
+                document.execCommand("copy");
+                
+                const icon = buttonElement.querySelector('i');
+                const originalClass = icon.className;
+                
+                icon.className = 'fas fa-check text-green-400';
+                buttonElement.classList.add('text-green-400');
+                
+                setTimeout(() => {
+                    icon.className = originalClass;
+                    buttonElement.classList.remove('text-green-400');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                alert("Gagal menyalin teks.");
+            }
+            
+            window.getSelection().removeAllRanges();
+        }
+    </script>
+</body>
+</html>```
